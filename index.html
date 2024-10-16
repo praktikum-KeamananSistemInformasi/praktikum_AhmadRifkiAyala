@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encryption and Decryption</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f9;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+        }
+        input, textarea, button, select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result, .explanation {
+            margin-top: 20px;
+        }
+        .explanation p {
+            margin-bottom: 10px;
+        }
+        .explanation {
+            background-color: #e0f7fa;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        .step {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Encryption & Decryption (AES, 3DES, RC4)</h2>
+
+    <textarea id="data" rows="4" placeholder="Enter your data..."></textarea>
+    <input type="text" id="key" placeholder="Enter encryption key (password)" />
+
+    <select id="algorithm">
+        <option value="AES">AES (256-bit)</option>
+        <option value="3DES">3DES</option>
+        <option value="RC4">RC4</option>
+    </select>
+
+    <button onclick="encryptData()">Encrypt Data</button>
+    <button onclick="decryptData()">Decrypt Data</button>
+
+    <div class="result">
+        <h3>Result:</h3>
+        <textarea id="result" rows="4" readonly></textarea>
+    </div>
+
+    <div class="explanation">
+        <h3>Step-by-step Process:</h3>
+        <div id="step-by-step"></div>
+    </div>
+</div>
+
+<script>
+   function displayStep(title, content, imgUrl = "") {
+    var stepContainer = document.getElementById('step-by-step');
+    var stepDiv = document.createElement('div');
+    stepDiv.className = 'step';
+    stepDiv.innerHTML = `<strong>${title}</strong><br>${content}`;
+    
+    if (imgUrl) {
+        var img = document.createElement('img');
+        img.src = imgUrl;
+        img.alt = title;
+        img.style.maxWidth = '300px'; // Atur lebar gambar agar sesuai
+        img.style.display = 'block';
+        img.style.marginTop = '10px';
+        stepDiv.appendChild(img); // Tambahkan gambar ke div
+    }
+
+    stepContainer.appendChild(stepDiv);
+}
+
+    function encryptData() {
+        var data = document.getElementById('data').value;
+        var key = document.getElementById('key').value;
+        var algorithm = document.getElementById('algorithm').value;
+        var stepContainer = document.getElementById('step-by-step');
+        stepContainer.innerHTML = ""; // Clear previous steps
+        var encrypted;
+
+        if (data && key) {
+            switch (algorithm) {
+                case 'AES':
+                displayStep("1. Plaintext", data);
+                var hashedKey = CryptoJS.SHA256(key).toString();
+                displayStep("2. Hashed Key (SHA-256)", hashedKey);
+                encrypted = CryptoJS.AES.encrypt(data, hashedKey).toString();
+                displayStep("3. Encrypted Data (Ciphertext)", encrypted);
+                // Menampilkan gambar diagram di sini
+                displayStep("Diagram Proses Enkripsi", "", "foto1.png");
+                break;
+
+                case '3DES':
+                    displayStep("1. Plaintext", data);
+                    encrypted = CryptoJS.TripleDES.encrypt(data, key).toString();
+                    displayStep("2. Encrypted Data (Ciphertext)", encrypted);
+                    displayStep("Diagram Proses Enkripsi", "", "foto2.png");
+                    break;
+
+                case 'RC4':
+                    displayStep("1. Plaintext", data);
+                    encrypted = CryptoJS.RC4.encrypt(data, key).toString();
+                    displayStep("2. Encrypted Data (Ciphertext)", encrypted);
+                    displayStep("Diagram Proses Enkripsi", "", "foto3.png");
+                    break;
+
+                default:
+                    alert("Unknown algorithm selected.");
+                    return;
+            }
+            document.getElementById('result').value = encrypted;
+        } else {
+            alert("Please enter data and key to encrypt.");
+        }
+    }
+
+    function decryptData() {
+        var encryptedData = document.getElementById('data').value;
+        var key = document.getElementById('key').value;
+        var algorithm = document.getElementById('algorithm').value;
+        var stepContainer = document.getElementById('step-by-step');
+        stepContainer.innerHTML = ""; // Clear previous steps
+        var decrypted;
+
+        if (encryptedData && key) {
+            try {
+                switch (algorithm) {
+                    case 'AES':
+                        displayStep("1. Ciphertext", encryptedData);
+                        var hashedKey = CryptoJS.SHA256(key).toString();
+                        displayStep("2. Hashed Key (SHA-256)", hashedKey);
+                        decrypted = CryptoJS.AES.decrypt(encryptedData, hashedKey).toString(CryptoJS.enc.Utf8);
+                        displayStep("3. Decrypted Data (Plaintext)", decrypted);
+                        displayStep("Diagram Proses Enkripsi", "", "foto1.png");
+
+                        break;
+
+                    case '3DES':
+                        displayStep("1. Ciphertext", encryptedData);
+                        decrypted = CryptoJS.TripleDES.decrypt(encryptedData, key).toString(CryptoJS.enc.Utf8);
+                        displayStep("2. Decrypted Data (Plaintext)", decrypted);
+                        displayStep("Diagram Proses Enkripsi", "", "foto2.png");
+                        break;
+
+                    case 'RC4':
+                        displayStep("1. Ciphertext", encryptedData);
+                        decrypted = CryptoJS.RC4.decrypt(encryptedData, key).toString(CryptoJS.enc.Utf8);
+                        displayStep("2. Decrypted Data (Plaintext)", decrypted);
+                        displayStep("Diagram Proses Enkripsi", "", "foto3.png");
+                        break;
+
+                    default:
+                        alert("Unknown algorithm selected.");
+                        return;
+                }
+                document.getElementById('result').value = decrypted;
+            } catch (error) {
+                document.getElementById('result').value = "Decryption failed. Check your key or encrypted data.";
+            }
+        } else {
+            alert("Please enter encrypted data and key to decrypt.");
+        }
+    }
+</script>
+
+</body>
+</html>
