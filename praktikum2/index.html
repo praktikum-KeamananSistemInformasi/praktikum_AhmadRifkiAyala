@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Threat Assessment Steps</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script defer src="js/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>Threat Assessment Steps</h1>
+    <div id="steps-container">
+        <!-- Step 1: Asset Identification -->
+        <div class="step" id="step1">
+            <h2>Step 1: Asset Identification</h2>
+            <form id="assetForm">
+                <label for="assetName">Asset Name:</label>
+                <input type="text" id="assetName" name="assetName" required>
+                <br>
+                <label for="description">Description:</label>
+                <input type="text" id="description" name="description" required>
+                <br>
+                <button type="button" onclick="nextStep('step2')">Next Step</button>
+            </form>
+        </div>
+
+        <!-- Step 2: Threat Identification -->
+        <div class="step" id="step2" style="display:none;">
+            <h2>Step 2: Threat Identification (STRIDE)</h2>
+            <form id="threatForm">
+                <label for="threatType">Threat Type:</label>
+                <select id="threatType" name="threatType">
+                    <option value="Spoofing">Spoofing</option>
+                    <option value="Tampering">Tampering</option>
+                    <option value="Repudiation">Repudiation</option>
+                    <option value="Information Disclosure">Information Disclosure</option>
+                    <option value="Denial of Service">Denial of Service</option>
+                    <option value="Elevation of Privilege">Elevation of Privilege</option>
+                </select>
+                <br>
+                <label for="threatDescription">Description:</label>
+                <input type="text" id="threatDescription" name="threatDescription" required>
+                <br>
+                <button type="button" onclick="nextStep('step3')">Next Step</button>
+            </form>
+        </div>
+
+        <!-- Step 3: Risk Assessment (DREAD) -->
+        <div class="step" id="step3" style="display:none;">
+            <h2>Step 3: Risk Assessment (DREAD)</h2>
+            <form id="dreadForm">
+                <label for="damage">Damage Potential (1-10):</label>
+                <input type="number" id="damage" name="damage" min="1" max="10" required>
+                <br>
+                <label for="reproducibility">Reproducibility (1-10):</label>
+                <input type="number" id="reproducibility" name="reproducibility" min="1" max="10" required>
+                <br>
+                <label for="exploitability">Exploitability (1-10):</label>
+                <input type="number" id="exploitability" name="exploitability" min="1" max="10" required>
+                <br>
+                <label for="affectedUsers">Affected Users (1-10):</label>
+                <input type="number" id="affectedUsers" name="affectedUsers" min="1" max="10" required>
+                <br>
+                <label for="discoverability">Discoverability (1-10):</label>
+                <input type="number" id="discoverability" name="discoverability" min="1" max="10" required>
+                <br>
+                <button type="button" onclick="calculateDreadScore()">Calculate Score & Next Step</button>
+            </form>
+            <p id="dreadScore"></p>
+        </div>
+
+        <!-- Step 4: Mitigation -->
+        <div class="step" id="step4" style="display:none;">
+            <h2>Step 4: Mitigation</h2>
+            <form id="mitigationForm">
+                <label for="mitigation">Mitigation Action:</label>
+                <input type="text" id="mitigation" name="mitigation" required>
+                <br>
+                <button type="button" onclick="completeAssessment()">Complete Assessment</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="summary" style="display:none;">
+        <h2>Assessment Summary</h2>
+        <p id="summaryContent"></p>
+        <canvas id="dreadChart" width="400" height="200"></canvas>
+    </div>
+</body>
+</html>
